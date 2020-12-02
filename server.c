@@ -13,7 +13,7 @@
 #define MAXLINE 100
 #define MAX_LISTEN_QUEUE 100
 
-int count = 0, check = 0, NumberQuestion = 0, i = 0, point = 0;
+int count = 0, check = 0, NumberQuestion = 0, i = 0, point = 0, tus1 = 0, tus2 = 0;
 char message[200] = "Goodbye ", code[200];
 
 typedef struct node {
@@ -523,13 +523,15 @@ int main(int argc, char* argv[]){
 			
 			while(n = recv(connfd, buff, MAXLINE, 0) > 0){
 
-				if(strcmp(buff, "1") == 0 ){
+				if(strcmp(buff, "1") == 0 && tus1 == 0 ){
 					option = 1;
 					sendMess("--- Đăng kí ---", connfd, (struct sockaddr*) &cliaddr);
 
-				}else if(strcmp(buff, "2") == 0)
+				}else if(strcmp(buff, "2") == 0 && tus2 == 0)
 				{
 					option = 2;
+					tus2 = 1;
+					tus1 = 1;
 					sendMess("--- Đăng nhập ---", connfd, (struct sockaddr*) &cliaddr);
 				}
 				
@@ -597,6 +599,8 @@ int main(int argc, char* argv[]){
 										option = 0;
 										regis = 0;
 										login = 0;
+										tus1 = 0;
+										tus2 = 0;
 										sendMess("Đã đăng xuất.", connfd, (struct sockaddr*) &cliaddr);
 									}else
 									{

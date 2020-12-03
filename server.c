@@ -14,8 +14,9 @@
 #define MAX_LISTEN_QUEUE 100
 
 int count = 0, check = 0, NumberQuestion = 0, i = 0, point = 0, tus1 = 0, tus2 = 0;
-char message[200] = "Goodbye ", code[200];
-
+char message[200] = "Goodbye ", code[200], messagePoint[200] = "Bạn đã thua cuộc. Số điểm bạn có là:" , chuoi[200];
+char level[10];
+//Account
 typedef struct node {
   	char username[20];
 	char password[20];
@@ -24,6 +25,9 @@ typedef struct node {
 	struct node *next;
 }node;
 
+node *head = NULL;
+
+//Bank question
 typedef struct bank{
     char question[120];
     char choiceA[70];
@@ -33,6 +37,7 @@ typedef struct bank{
     char answer[5];
 }Bank;                                  //Array size for getting questions per level
 
+//Question
 typedef struct question
 {
     char word[1000];
@@ -46,14 +51,6 @@ Bank setMod[30];
 Question questionEasy[30];
 Question questionHard[30];
 Question questionMod[30];
-
-
-
-struct highscore{
-    int entries;
-    char aName[15];
-    char score[7];
-}top[100],top2[100]; //Array size for high scores txt file
 
 FILE*eBank;
 FILE*mBank;
@@ -185,7 +182,8 @@ void makeQuesMod(){
     }
 }
 
-node *head = NULL;
+//Function of account
+
 
 void insert(char username[20], char password[20], int status, char homepage[200]){
 	node *temp;
@@ -424,6 +422,79 @@ node *signout(){
 	else return acc;
 }
 
+typedef struct score
+{
+    char level[5];
+    char aName[20];
+    int  aScore;
+    struct score *next;
+}score;
+
+//Function of Score
+score *head1 = NULL;
+
+void insertScore(char level[5], char aName[20], int aScore){
+	score *temp;
+	temp=(score *)malloc(sizeof(score));
+	strcpy(temp->level, level);
+	strcpy(temp->aName, aName);
+	temp->aScore = aScore;
+	temp->next = head1;
+	head1 = temp;
+}
+
+void printAllScore()
+{
+    score *temp;
+    temp = head1;
+    while(temp)
+    {
+    	printf("%5s %20s %d",temp->level, temp->aName, temp->aScore);
+        printf("\n");
+        temp=temp->next;
+    }
+    printf("\n");
+}
+
+void openFileScore(){
+	score *user;
+	char *level;
+	char *aName;
+	int score;
+	char c;
+	int u = 0, p = 0, blank = 0;
+	level = (char *)malloc(5);
+	aName = (char *)malloc(20);
+    FILE *fptr;
+	if((fptr=fopen("score.txt","r+"))==NULL){
+		printf("Not find%s\n","score.txt");
+		return;
+	}
+	while(1){
+		fscanf(fptr,"%s",level);
+		fscanf(fptr,"%s",aName);
+		fscanf(fptr,"%d",&score);
+		if(feof(fptr)) break;
+		insertScore(level, aName, score);
+	}
+	free(level); free(aName);
+	fclose(fptr);
+}
+
+void writeFileScore(){
+	FILE *fptr;
+	score *temp;
+    temp = head1;
+    fptr=fopen("score.txt","w+");
+    while(temp){
+    	fprintf(fptr, "%s %s %d", temp->level, temp->aName, temp->aScore);
+    	fprintf(fptr, "\n");
+    	temp=temp->next;
+    }
+    fclose(fptr);
+}
+
+
 void sendMess(char *content, int sockfd, struct sockaddr *servaddr){
 	int len, sendBytes;
 	  
@@ -471,9 +542,15 @@ char* Encode(char Str[200]){
 
 pid_t fork(void);
 
+
 int main(int argc, char* argv[]){
 
     openFile();
+	openFileScore();
+
+
+				
+	
 
 	pid_t pid;
     int listenfd, connfd, n, portNumber;
@@ -510,6 +587,7 @@ int main(int argc, char* argv[]){
 	int option = 0, regis = 0, login = 0;
 
 	char username[20], password[20];
+	
 
     // communicate with client
     while(1){
@@ -532,6 +610,7 @@ int main(int argc, char* argv[]){
 					option = 2;
 					tus2 = 1;
 					tus1 = 1;
+					
 					sendMess("--- Đăng nhập ---", connfd, (struct sockaddr*) &cliaddr);
 				}
 				
@@ -557,6 +636,7 @@ int main(int argc, char* argv[]){
 									strcpy(password, buff);
 									insert(username, password, 1, "123.12");
 									writeFile();
+									option = 0;
 									regis = 0;
 									break;
 								default:
@@ -638,6 +718,7 @@ int main(int argc, char* argv[]){
 									}
 									
 									break;
+		//Case 5 + 6 : Question Easy
 								case 5:
 									sendMess(questionEasy[i].word, connfd, (struct sockaddr*) &cliaddr);
 									login = 6;
@@ -645,9 +726,10 @@ int main(int argc, char* argv[]){
 
 								case 6:
 									if(strcmp(buff, questionEasy[i].answer) == 0){
-										if(i < 15){
+										if(i < 15){	
 											i++;
 											login = 5;
+											point = point + 100;
 											sendMess("Đáp án chính xác.", connfd, (struct sockaddr*) &cliaddr);
 										}else
 										{
@@ -655,13 +737,18 @@ int main(int argc, char* argv[]){
 										}
 										
 									}else
-									{
-										
-										sendMess("Bạn đã thua cuộc.", connfd, (struct sockaddr*) &cliaddr);
+									{	
+										insertScore("Dễ", acc->username, point);
+										writeFileScore();
+										snprintf(chuoi,sizeof(chuoi), "%d", point);
+										strcat(messagePoint, chuoi);
+										sendMess(messagePoint, connfd, (struct sockaddr*) &cliaddr);
+										point = 0;
 										login = 2;
 									}
 									
 									break;
+		//Case 7 + 8 : Question Mod
 								case 7:
 									sendMess(questionMod[i].word, connfd, (struct sockaddr*) &cliaddr);
 									login = 8;
@@ -672,6 +759,7 @@ int main(int argc, char* argv[]){
 										if(i < 15){
 											i++;
 											login = 7;
+											point = point + 200;
 											sendMess("Đáp án chính xác.", connfd, (struct sockaddr*) &cliaddr);
 										}else
 										{
@@ -681,11 +769,17 @@ int main(int argc, char* argv[]){
 										
 									}else
 									{	
-										sendMess("Bạn đã thua cuộc.", connfd, (struct sockaddr*) &cliaddr);
-										i = 0;
+										insertScore("Trung bình", acc->username, point);
+										writeFileScore();
+										snprintf(chuoi,sizeof(chuoi), "%d", point);
+										strcat(messagePoint, chuoi);
+										sendMess(messagePoint, connfd, (struct sockaddr*) &cliaddr);
+										point = 0;
+										login = 2;
 									}
 									
 									break;
+		//Case 9 + 10 : Question Hard							
 								case 9:
 									sendMess(questionHard[i].word, connfd, (struct sockaddr*) &cliaddr);
 									login = 10;
@@ -696,6 +790,7 @@ int main(int argc, char* argv[]){
 										if(i < 15){
 											i++;
 											login = 9;
+											point = point + 300;
 											sendMess("Đáp án chính xác.", connfd, (struct sockaddr*) &cliaddr);
 										}else
 										{
@@ -704,7 +799,13 @@ int main(int argc, char* argv[]){
 										
 									}else
 									{		
-										sendMess("Bạn đã thua cuộc.", connfd, (struct sockaddr*) &cliaddr);
+										insertScore("Khó", acc->username, point);
+										writeFileScore();
+										snprintf(chuoi,sizeof(chuoi), "%d", point);
+										strcat(messagePoint, chuoi);
+										sendMess(messagePoint, connfd, (struct sockaddr*) &cliaddr);
+										point = 0;
+										login = 2;
 									}
 									
 									break;

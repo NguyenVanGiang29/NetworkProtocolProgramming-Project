@@ -2,9 +2,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-
-
-
 typedef struct bank{
     char question[120];
     char choiceA[70];
@@ -35,6 +32,80 @@ struct highscore{
     char aName[15];
     char score[7];
 }top[100],top2[100]; //Array size for high scores txt file
+
+typedef struct score
+{
+    char level[5];
+    char aName[20];
+    int  aScore;
+    struct score *next;
+}score;
+
+score *head = NULL;
+
+void insertScore(char level[5], char aName[20], int aScore){
+	score *temp;
+	temp=(score *)malloc(sizeof(score));
+	strcpy(temp->level, level);
+	strcpy(temp->aName, aName);
+	temp->aScore = aScore;
+	temp->next = head;
+	head = temp;
+}
+
+void printAll()
+{
+    score *temp;
+    temp = head;
+    while(temp)
+    {
+    	printf("%5s %20s %d",temp->level, temp->aName, temp->aScore);
+        printf("\n");
+        temp=temp->next;
+    }
+    printf("\n");
+}
+
+void openFileScore(){
+	score *user;
+	char *level;
+	char *aName;
+	int score;
+	char c;
+	int u = 0, p = 0, blank = 0;
+	level = (char *)malloc(5);
+	aName = (char *)malloc(20);
+    FILE *fptr;
+	if((fptr=fopen("score.txt","r+"))==NULL){
+		printf("Not find%s\n","score.txt");
+		return;
+	}
+	while(1){
+		fscanf(fptr,"%s",level);
+		fscanf(fptr,"%s",aName);
+		fscanf(fptr,"%d",&score);
+		if(feof(fptr)) break;
+		insertScore(level, aName, score);
+	}
+	free(level); free(aName);
+	fclose(fptr);
+}
+
+void writeFileScore(){
+	FILE *fptr;
+	score *temp;
+    temp = head;
+    fptr=fopen("score.txt","w+");
+    while(temp){
+    	fprintf(fptr, "%s %s %d", temp->level, temp->aName, temp->aScore);
+    	fprintf(fptr, "\n");
+    	temp=temp->next;
+    }
+    fclose(fptr);
+}
+
+
+
 
 FILE*eBank;
 FILE*mBank;
@@ -164,22 +235,34 @@ void makeQuesMod(){
 }
 
 int main(){
-    makeQuesEasy();
-    for (int i = 0; i < 30; i++)
-    {
-        printf("%s", questionEasy[i].word);
-    }
-    makeQuesHard();
-    for (int i = 0; i < 30; i++)
-    {
-        printf("%s", questionHard[i].word);
-    }
-    makeQuesMod();
-    for (int i = 0; i < 30; i++)
-    {
-        printf("%s", questionMod[i].word);
-    }
-    
-    
-  
+    char level[5];
+    char aName[20];
+    int aScore;
+    openFileScore();
+    // printf("Nhap level:\n");
+    // scanf("%s", level);
+    // printf("Nhap Nam: \n");
+    // scanf("%s", aName);
+    // printf("Nhap Score: \n");
+    // scanf("%d", aScore);
+    insertScore("Kho", "GIANG", 1111);
+    writeFileScore();
+
+
+    // makeQuesEasy();
+    // for (int i = 0; i < 30; i++)
+    // {
+    //     printf("%s", questionEasy[i].word);
+    // }
+    // makeQuesHard();
+    // for (int i = 0; i < 30; i++)
+    // {
+    //     printf("%s", questionHard[i].word);
+    // }
+    // makeQuesMod();
+    // for (int i = 0; i < 30; i++)
+    // {
+    //     printf("%s", questionMod[i].word);
+    // }
+
 }

@@ -602,6 +602,7 @@ int main(int argc, char* argv[]){
 			while(n = recv(connfd, buff, MAXLINE, 0) > 0){
 
 				if(strcmp(buff, "1") == 0 && tus1 == 0 ){
+					tus1 = 1;
 					option = 1;
 					sendMess("--- Đăng kí ---", connfd, (struct sockaddr*) &cliaddr);
 
@@ -626,8 +627,11 @@ int main(int argc, char* argv[]){
 										sendMess("Tạo mật khẩu:", connfd, (struct sockaddr*) &cliaddr);
 										strcpy(username, buff);
 										regis = 1;
+										tus1 = 1;
 									}else
 									{
+										tus1 = 1;
+										tus2 = 1;
 										sendMess("Tên tài khoản đã tồn tại! Hãy thử với tên khác.", connfd, (struct sockaddr*) &cliaddr);
 									}								
 									break;
@@ -636,6 +640,8 @@ int main(int argc, char* argv[]){
 									strcpy(password, buff);
 									insert(username, password, 1, "123.12");
 									writeFile();
+									tus1 = 0;
+									tus2 = 0;
 									option = 0;
 									regis = 0;
 									break;
@@ -733,7 +739,7 @@ int main(int argc, char* argv[]){
 											sendMess("Đáp án chính xác.", connfd, (struct sockaddr*) &cliaddr);
 										}else
 										{
-											sendMess("Bạn đã chiến thắng.", connfd, (struct sockaddr*) &cliaddr);
+											sendMess("Bạn đã trở thành triệu phú. Chúc mừng bạn!", connfd, (struct sockaddr*) &cliaddr);
 										}
 										
 									}else
@@ -763,7 +769,7 @@ int main(int argc, char* argv[]){
 											sendMess("Đáp án chính xác.", connfd, (struct sockaddr*) &cliaddr);
 										}else
 										{
-											sendMess("Bạn đã chiến thắng.", connfd, (struct sockaddr*) &cliaddr);
+											sendMess("Bạn đã trở thành triệu phú. Chúc mừng bạn!", connfd, (struct sockaddr*) &cliaddr);
 											i = 0;
 										}
 										
@@ -794,7 +800,7 @@ int main(int argc, char* argv[]){
 											sendMess("Đáp án chính xác.", connfd, (struct sockaddr*) &cliaddr);
 										}else
 										{
-											sendMess("Bạn đã chiến thắng.", connfd, (struct sockaddr*) &cliaddr);
+											sendMess("Bạn đã trở thành triệu phú. Chúc mừng bạn!", connfd, (struct sockaddr*) &cliaddr);
 										}
 										
 									}else

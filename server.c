@@ -724,10 +724,25 @@ int main(int argc, char* argv[]){
 									}
 									
 									break;
+
 		//Case 5 + 6 : Question Easy
 								case 5:
-									sendMess(questionEasy[i].word, connfd, (struct sockaddr*) &cliaddr);
-									login = 6;
+									if(strcmp(buff, "SS") == 0 || strcmp(buff, "OK") == 0){
+										sendMess(questionEasy[i].word, connfd, (struct sockaddr*) &cliaddr);
+										login = 6;
+									}else if(strcmp(buff, "STOP") == 0){
+										insertScore("Dễ", acc->username, point);
+										writeFileScore();
+										snprintf(chuoi,sizeof(chuoi), "%d", point);
+										strcat(messagePoint, chuoi);
+										sendMess(messagePoint, connfd, (struct sockaddr*) &cliaddr);
+										point = 0;
+										login = 2;
+									}else
+									{
+										sendMess("Sai cú pháp.", connfd, (struct sockaddr*) &cliaddr);
+									}
+									
 									break;
 
 								case 6:
@@ -754,10 +769,25 @@ int main(int argc, char* argv[]){
 									}
 									
 									break;
+
 		//Case 7 + 8 : Question Mod
 								case 7:
-									sendMess(questionMod[i].word, connfd, (struct sockaddr*) &cliaddr);
-									login = 8;
+									if(strcmp(buff, "SS") == 0 || strcmp(buff, "OK") == 0){
+										sendMess(questionMod[i].word, connfd, (struct sockaddr*) &cliaddr);
+										login = 8;
+									}else if(strcmp(buff, "STOP") == 0){
+										insertScore("Trung bình", acc->username, point);
+										writeFileScore();
+										snprintf(chuoi,sizeof(chuoi), "%d", point);
+										strcat(messagePoint, chuoi);
+										sendMess(messagePoint, connfd, (struct sockaddr*) &cliaddr);
+										point = 0;
+										login = 2;
+									}else
+									{
+										sendMess("Sai cú pháp.", connfd, (struct sockaddr*) &cliaddr);
+									}
+									
 									break;
 
 								case 8:
@@ -785,10 +815,26 @@ int main(int argc, char* argv[]){
 									}
 									
 									break;
+
 		//Case 9 + 10 : Question Hard							
 								case 9:
-									sendMess(questionHard[i].word, connfd, (struct sockaddr*) &cliaddr);
-									login = 10;
+									if(strcmp(buff, "SS") == 0 || strcmp(buff, "OK") == 0){
+										sendMess(questionHard[i].word, connfd, (struct sockaddr*) &cliaddr);
+										login = 10;
+									}
+									else if(strcmp(buff, "STOP") == 0){
+										insertScore("Khó", acc->username, point);
+										writeFileScore();
+										snprintf(chuoi,sizeof(chuoi), "%d", point);
+										strcat(messagePoint, chuoi);
+										sendMess(messagePoint, connfd, (struct sockaddr*) &cliaddr);
+										point = 0;
+										login = 2;
+									}else
+									{
+										sendMess("Sai cú pháp.", connfd, (struct sockaddr*) &cliaddr);
+									}
+
 									break;
 
 								case 10:

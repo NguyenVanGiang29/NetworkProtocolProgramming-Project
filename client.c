@@ -12,7 +12,7 @@
 int main(int argc, char *argv[]){
     int sockfd, serverPortNum, sendBytes, rcvBytes;
     struct sockaddr_in servaddr;
-    char sendline[MAXLINE], recvline[MAXLINE], server_response[256];;
+    char sendline[MAXLINE], recvline[MAXLINE], server_response[256], string1[100];
 
     // create a socket for theo client
     if((sockfd = socket(AF_INET, SOCK_STREAM, 0)) < 0){
@@ -91,10 +91,10 @@ int main(int argc, char *argv[]){
 
         if(strcmp(server_response, "Đáp án chính xác.") == 0)
         {
-            printf("%s\n","Tiep tuc cuoc choi nhap OK");
+            printf("%s\n","Tiếp tục cuộc chơi nhập \"OK\". Dừng cuộc chơi nhập \"STOP\"");
         }
         
-        if(strcmp(server_response, "Bạn đã thua cuộc.") == 0)
+        if(strstr(server_response, "Bạn đã thua cuộc.") != NULL )
         {
             Play();
         }

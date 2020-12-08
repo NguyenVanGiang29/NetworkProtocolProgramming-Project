@@ -73,7 +73,7 @@ int main(int argc, char *argv[]){
             Play();
         }
 
-        if(strcmp(server_response, "--- Ai là triệu phú ---") == 0){
+        if(strcmp(server_response, "--- Ai là triệu phú ---") == 0 || strstr(server_response, "Sai cú pháp!") != NULL){
             Question();
         }
 
@@ -99,6 +99,15 @@ int main(int argc, char *argv[]){
             Play();
         }
 
+        if(strcmp(server_response, "Sai cú pháp.") == 0 )
+        {
+            printf("%s\n","Bạn đã sẵn sàng chưa? ( Nhập \"SS\" để bắt đầu)");
+        }
+
+        if(strstr(server_response, "Dễ") != NULL || strstr(server_response, "Khó") != NULL || strstr(server_response, "Trung bình") != NULL  )
+        {
+            Play();
+        }
     }
 }
 
@@ -114,7 +123,8 @@ void Play(){
     printf("%s\n", "2-1. Chơi");
     printf("%s\n", "2-2. Đổi mật khẩu");
     printf("%s\n", "2-3. Đăng xuất");
-    printf("%s\n", "Hãy lựa chọn(2-1 -> 2-3)");
+    printf("%s\n", "2-4. Xem điểm");
+    printf("%s\n", "Hãy lựa chọn(2-1 -> 2-4)");
 }
 
 void Question(){

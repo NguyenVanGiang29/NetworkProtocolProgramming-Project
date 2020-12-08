@@ -2,6 +2,9 @@
 #include <stdlib.h>
 #include <string.h>
 
+char revertStr[20];
+char *strScore;
+
 typedef struct bank{
     char question[120];
     char choiceA[70];
@@ -25,13 +28,6 @@ Question questionEasy[30];
 Question questionHard[30];
 Question questionMod[30];
 
-
-
-struct highscore{
-    int entries;
-    char aName[15];
-    char score[7];
-}top[100],top2[100]; //Array size for high scores txt file
 
 typedef struct score
 {
@@ -104,7 +100,40 @@ void writeFileScore(){
     fclose(fptr);
 }
 
+void save(){
+    score *temp;
+    temp = head;
+	while(temp != NULL)
+    {
+    	strcpy(strScore, temp->level);
+        strcat(strScore, "\t");
+		strcat(strScore, temp->aName);
+        snprintf(revertStr,sizeof(revertStr), "%d", temp->aScore);
+        strcat(strScore, "\t");
+		strcat(strScore, revertStr);
+        temp = temp->next;
+    }
+}
 
+char *special_char_remplace(){
+
+    size_t len, bytesRead;
+    char *readedContent;
+    FILE* f2;
+
+    f2 = fopen("score.txt", "rb");
+
+    fseek(f2, 0, SEEK_END);
+    len = ftell(f2);
+    rewind(f2);
+
+    readedContent = (char*) malloc(sizeof(char) * len + 1);
+    readedContent[len] = '\0'; // Is needed only for printing to stdout with printf
+
+    bytesRead = fread(readedContent, sizeof(char), len, f2);
+    fclose(f2);
+    return readedContent;
+}
 
 
 FILE*eBank;
@@ -239,30 +268,7 @@ int main(){
     char aName[20];
     int aScore;
     openFileScore();
-    // printf("Nhap level:\n");
-    // scanf("%s", level);
-    // printf("Nhap Nam: \n");
-    // scanf("%s", aName);
-    // printf("Nhap Score: \n");
-    // scanf("%d", aScore);
-    insertScore("Kho", "GIANG", 1111);
-    writeFileScore();
-
-
-    // makeQuesEasy();
-    // for (int i = 0; i < 30; i++)
-    // {
-    //     printf("%s", questionEasy[i].word);
-    // }
-    // makeQuesHard();
-    // for (int i = 0; i < 30; i++)
-    // {
-    //     printf("%s", questionHard[i].word);
-    // }
-    // makeQuesMod();
-    // for (int i = 0; i < 30; i++)
-    // {
-    //     printf("%s", questionMod[i].word);
-    // }
+    strScore = special_char_remplace();
+    printf("%s", strScore);
 
 }

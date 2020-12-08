@@ -16,6 +16,7 @@
 int count = 0, check = 0, NumberQuestion = 0, i = 0, point = 0, tus1 = 0, tus2 = 0;
 char message[200] = "Goodbye ", code[200], messagePoint[200] = "Bạn đã thua cuộc. Số điểm bạn có là:" , chuoi[200];
 char level[10];
+char *strScore;
 //Account
 typedef struct node {
   	char username[20];
@@ -453,7 +454,6 @@ void printAllScore()
         printf("\n");
         temp=temp->next;
     }
-    printf("\n");
 }
 
 void openFileScore(){
@@ -494,6 +494,25 @@ void writeFileScore(){
     fclose(fptr);
 }
 
+char *special_char_remplace(){
+
+    size_t len, bytesRead;
+    char *readedContent;
+    FILE* f2;
+
+    f2 = fopen("score.txt", "rb");
+
+    fseek(f2, 0, SEEK_END);
+    len = ftell(f2);
+    rewind(f2);
+
+    readedContent = (char*) malloc(sizeof(char) * len + 1);
+    readedContent[len] = '\0';                      // Is needed only for printing to stdout with printf
+
+    bytesRead = fread(readedContent, sizeof(char), len, f2);
+    fclose(f2);
+    return readedContent;
+}
 
 void sendMess(char *content, int sockfd, struct sockaddr *servaddr){
 	int len, sendBytes;
@@ -548,7 +567,7 @@ int main(int argc, char* argv[]){
     openFile();
 	openFileScore();
 
-
+	strScore = special_char_remplace();
 				
 	
 
@@ -688,9 +707,15 @@ int main(int argc, char* argv[]){
 										tus1 = 0;
 										tus2 = 0;
 										sendMess("Đã đăng xuất.", connfd, (struct sockaddr*) &cliaddr);
-									}else
+									}
+									else if(strcmp(buff, "2-4") == 0)
 									{
-										sendMess("Lựa chọn sai cú pháp. Mời nhập lại (2-1, 2-2, 2-3).", connfd, (struct sockaddr*) &cliaddr);
+										login = 2;
+										sendMess(strScore, connfd, (struct sockaddr*) &cliaddr);
+									}
+									else
+									{
+										sendMess("Lựa chọn sai cú pháp. Mời nhập lại (2-1, 2-2, 2-3, 2-4).", connfd, (struct sockaddr*) &cliaddr);
 									}
 									
 									break;
@@ -721,7 +746,11 @@ int main(int argc, char* argv[]){
 									{
 										sendMess("Bạn đã sẵn sàng chưa? ( Nhập \"SS\" để bắt đầu)", connfd, (struct sockaddr*) &cliaddr);
 										login = 9;
+									}else
+									{
+										sendMess("Sai cú pháp!", connfd, (struct sockaddr*) &cliaddr);
 									}
+									
 									
 									break;
 

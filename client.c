@@ -101,7 +101,7 @@ int main(int argc, char *argv[]){
 
         if(strcmp(server_response, "Sai cú pháp.") == 0 )
         {
-            printf("%s\n","Bạn đã sẵn sàng chưa? ( Nhập \"SS\" để bắt đầu)");
+            printf("%s\n","Bạn đã sẵn sàng chưa? ( Nhập \"SS\" để bắt đầu hoặc \"OK\" để tiếp tục câu tiếp theo)");
         }
 
         if(strstr(server_response, "Dễ") != NULL || strstr(server_response, "Khó") != NULL || strstr(server_response, "Trung bình") != NULL  )

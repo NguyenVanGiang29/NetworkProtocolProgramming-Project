@@ -8,15 +8,17 @@
 
 #include <unistd.h>
 
+#include <time.h>
+
 
 
 #define MAXLINE 100
 #define MAX_LISTEN_QUEUE 100
 
 int count = 0, check = 0, NumberQuestion = 0, i = 0, point = 0, tus1 = 0, tus2 = 0;
-char message[200] = "Goodbye ", code[200], messagePoint[200] = "Bạn đã thua cuộc. Số điểm bạn có là:" , chuoi[200];
+char message[200] = "Goodbye ", code[200], messagePoint[200] = "Bạn đã thua cuộc. Số điểm bạn có là:", chuoi1[100] = "Loại bỏ đi 2 phương án sai: " ;
 char level[10];
-char *strScore;
+char *strScore, *AnsRand;
 //Account
 typedef struct node {
   	char username[20];
@@ -559,6 +561,56 @@ char* Encode(char Str[200]){
     return strdup(NewStr);
 }
 
+int ranDomAns(int a){
+    int intRandom;
+    srand(time(NULL));
+    do{
+        intRandom = (rand()%5);
+
+    }while (intRandom == 0 || intRandom == a);
+    
+    return intRandom;
+} 
+
+int changeStrtoInt(char *a){
+	int num;
+
+	if(strcmp(a, "A") == 0){
+		return num = 1;
+	}else if(strcmp(a, "B") == 0)
+	{
+		return num = 2;
+	}
+	else if(strcmp(a, "C") == 0)
+	{
+		return num = 3;
+	}
+	else if(strcmp(a, "D") == 0)
+	{
+		return num = 4;
+	}
+	
+}
+
+char *changeInttoStr(int a){
+	char *b;
+	if(a == 1){
+		return b = "A";
+	}else if(a == 2)
+	{
+		return b = "B";
+	}
+	else if(a == 3)
+	{
+		return b = "C";
+	}
+	else if(a == 4)
+	{
+		return b = "D";
+	}
+	
+} 
+
 pid_t fork(void);
 
 
@@ -603,9 +655,9 @@ int main(int argc, char* argv[]){
 
     node *acc;
 
-	int option = 0, regis = 0, login = 0;
+	int option = 0, regis = 0, login = 0, numAns = 0, num = 0;
 
-	char username[20], password[20];
+	char username[20], password[20], chuoi[10] = "abc";
 	
 
     // communicate with client
@@ -775,28 +827,47 @@ int main(int argc, char* argv[]){
 									break;
 
 								case 6:
-									if(strcmp(buff, questionEasy[i].answer) == 0){
-										if(i < 15){	
-											i++;
-											login = 5;
-											point = point + 100;
-											sendMess("Đáp án chính xác.", connfd, (struct sockaddr*) &cliaddr);
-										}else
-										{
-											sendMess("Bạn đã trở thành triệu phú. Chúc mừng bạn!", connfd, (struct sockaddr*) &cliaddr);
-										}
-										
-									}else
-									{	
-										insertScore("Dễ", acc->username, point);
-										writeFileScore();
-										snprintf(chuoi,sizeof(chuoi), "%d", point);
-										strcat(messagePoint, chuoi);
-										sendMess(messagePoint, connfd, (struct sockaddr*) &cliaddr);
-										point = 0;
-										login = 2;
-									}
+									if(strcmp(buff, "H") == 0){
+										num = changeStrtoInt(questionEasy[i].answer);
+										numAns = ranDomAns(num);
+										AnsRand = changeInttoStr(numAns);
+										strcat(chuoi1, questionEasy[i].answer);
+										strcat(chuoi1, "\t");
+										strcat(chuoi1, AnsRand);
+										sendMess(chuoi1, connfd, (struct sockaddr*) &cliaddr);
 									
+									}else if(strcmp(buff, "A") != 0 && strcmp(buff, "B") != 0  && strcmp(buff, "C") != 0 && strcmp(buff, "D") != 0){
+										sendMess("Nhap sai cu phap dap an.", connfd, (struct sockaddr*) &cliaddr);
+									}
+									else{
+										if(strcmp(buff, questionEasy[i].answer) == 0){
+											if(i < 15){	
+												i++;
+												login = 5;
+												point = point + 100;
+												sendMess("Đáp án chính xác.", connfd, (struct sockaddr*) &cliaddr);
+											}else
+											{
+												sendMess("Bạn đã trở thành triệu phú. Chúc mừng bạn!", connfd, (struct sockaddr*) &cliaddr);
+												point = 0;
+												login = 2;
+												i = 0;
+												chuoi[0] = '\0';
+											}
+										}else{
+											insertScore("Dễ", acc->username, point);
+											writeFileScore();
+											snprintf(chuoi,sizeof(chuoi), "%d", point);
+											strcat(messagePoint, chuoi);
+											chuoi[0] = '\0';
+											sendMess(messagePoint, connfd, (struct sockaddr*) &cliaddr);
+											point = 0;
+											login = 2;
+											i = 0;
+											
+										}
+									}
+					
 									break;
 
 		//Case 7 + 8 : Question Mod
@@ -820,27 +891,45 @@ int main(int argc, char* argv[]){
 									break;
 
 								case 8:
-									if(strcmp(buff, questionMod[i].answer) == 0){
-										if(i < 15){
-											i++;
-											login = 7;
-											point = point + 200;
-											sendMess("Đáp án chính xác.", connfd, (struct sockaddr*) &cliaddr);
-										}else
-										{
-											sendMess("Bạn đã trở thành triệu phú. Chúc mừng bạn!", connfd, (struct sockaddr*) &cliaddr);
+									if(strcmp(buff, "H") == 0){
+										num = changeStrtoInt(questionMod[i].answer);
+										numAns = ranDomAns(num);
+										AnsRand = changeInttoStr(numAns);
+										strcat(chuoi1, questionMod[i].answer);
+										strcat(chuoi1, "\t");
+										strcat(chuoi1, AnsRand);
+										sendMess(chuoi1, connfd, (struct sockaddr*) &cliaddr);
+									
+									}else if(strcmp(buff, "A") != 0 && strcmp(buff, "B") != 0  && strcmp(buff, "C") != 0 && strcmp(buff, "D") != 0){
+										sendMess("Nhap sai cu phap dap an.", connfd, (struct sockaddr*) &cliaddr);
+									}
+									else{
+										if(strcmp(buff, questionMod[i].answer) == 0){
+											if(i < 15){	
+												i++;
+												login = 5;
+												point = point + 200;
+												sendMess("Đáp án chính xác.", connfd, (struct sockaddr*) &cliaddr);
+											}else
+											{
+												sendMess("Bạn đã trở thành triệu phú. Chúc mừng bạn!", connfd, (struct sockaddr*) &cliaddr);
+												point = 0;
+												login = 2;
+												i = 0;
+												chuoi[0] = '\0';
+											}
+										}else{
+											insertScore("Trung bình", acc->username, point);
+											writeFileScore();
+											snprintf(chuoi,sizeof(chuoi), "%d", point);
+											strcat(messagePoint, chuoi);
+											chuoi[0] = '\0';
+											sendMess(messagePoint, connfd, (struct sockaddr*) &cliaddr);
+											point = 0;
+											login = 2;
 											i = 0;
+											
 										}
-										
-									}else
-									{	
-										insertScore("Trung bình", acc->username, point);
-										writeFileScore();
-										snprintf(chuoi,sizeof(chuoi), "%d", point);
-										strcat(messagePoint, chuoi);
-										sendMess(messagePoint, connfd, (struct sockaddr*) &cliaddr);
-										point = 0;
-										login = 2;
 									}
 									
 									break;
@@ -867,26 +956,45 @@ int main(int argc, char* argv[]){
 									break;
 
 								case 10:
-									if(strcmp(buff, questionHard[i].answer) == 0){
-										if(i < 15){
-											i++;
-											login = 9;
-											point = point + 300;
-											sendMess("Đáp án chính xác.", connfd, (struct sockaddr*) &cliaddr);
-										}else
-										{
-											sendMess("Bạn đã trở thành triệu phú. Chúc mừng bạn!", connfd, (struct sockaddr*) &cliaddr);
+									if(strcmp(buff, "H") == 0){
+										num = changeStrtoInt(questionHard[i].answer);
+										numAns = ranDomAns(num);
+										AnsRand = changeInttoStr(numAns);
+										strcat(chuoi1, questionHard[i].answer);
+										strcat(chuoi1, "\t");
+										strcat(chuoi1, AnsRand);
+										sendMess(chuoi1, connfd, (struct sockaddr*) &cliaddr);
+									
+									}else if(strcmp(buff, "A") != 0 && strcmp(buff, "B") != 0  && strcmp(buff, "C") != 0 && strcmp(buff, "D") != 0){
+										sendMess("Nhap sai cu phap dap an.", connfd, (struct sockaddr*) &cliaddr);
+									}
+									else{
+										if(strcmp(buff, questionHard[i].answer) == 0){
+											if(i < 15){	
+												i++;
+												login = 5;
+												point = point + 300;
+												sendMess("Đáp án chính xác.", connfd, (struct sockaddr*) &cliaddr);
+											}else
+											{
+												sendMess("Bạn đã trở thành triệu phú. Chúc mừng bạn!", connfd, (struct sockaddr*) &cliaddr);
+												point = 0;
+												login = 2;
+												i = 0;
+												chuoi[0] = '\0';
+											}
+										}else{
+											insertScore("Khó", acc->username, point);
+											writeFileScore();
+											snprintf(chuoi,sizeof(chuoi), "%d", point);
+											strcat(messagePoint, chuoi);
+											chuoi[0] = '\0';
+											sendMess(messagePoint, connfd, (struct sockaddr*) &cliaddr);
+											point = 0;
+											login = 2;
+											i = 0;
+											
 										}
-										
-									}else
-									{		
-										insertScore("Khó", acc->username, point);
-										writeFileScore();
-										snprintf(chuoi,sizeof(chuoi), "%d", point);
-										strcat(messagePoint, chuoi);
-										sendMess(messagePoint, connfd, (struct sockaddr*) &cliaddr);
-										point = 0;
-										login = 2;
 									}
 									
 									break;

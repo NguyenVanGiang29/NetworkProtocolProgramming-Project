@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 
 char revertStr[20];
 char *strScore;
@@ -128,7 +129,7 @@ char *special_char_remplace(){
     rewind(f2);
 
     readedContent = (char*) malloc(sizeof(char) * len + 1);
-    readedContent[len] = '\0'; // Is needed only for printing to stdout with printf
+    readedContent[len] = '\0';                      // Is needed only for printing to stdout with printf
 
     bytesRead = fread(readedContent, sizeof(char), len, f2);
     fclose(f2);
@@ -263,12 +264,30 @@ void makeQuesMod(){
     }
 }
 
+int ranDomAns(int a){
+    int intRandom;
+    srand(time(NULL));
+    do{
+        intRandom = (rand()%5);
+
+    }while (intRandom == 0 || intRandom == a);
+    
+    return intRandom;
+    
+} 
+
 int main(){
     char level[5];
     char aName[20];
     int aScore;
+    int num;
+    char str[10] = "abc";
     openFileScore();
     strScore = special_char_remplace();
     printf("%s", strScore);
+    num = ranDomAns(1);
+    printf("%d\n", num);
+    str[0] = '\0';
+    printf("%s", str);
 
 }

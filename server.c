@@ -16,7 +16,7 @@
 #define MAX_LISTEN_QUEUE 100
 
 int count = 0, check = 0, NumberQuestion = 0, i = 0, point = 0, tus1 = 0, tus2 = 0;
-char message[200] = "Goodbye ", code[200], messagePoint[200] = "Bạn đã thua cuộc. Số điểm bạn có là:", chuoi1[100] = "Loại bỏ đi 2 phương án sai: " ;
+char message[200] = "Goodbye ", code[200], messagePoint[200] = "Bạn đã thua cuộc. Số điểm bạn có là: ";
 char level[10];
 char *strScore, *AnsRand;
 //Account
@@ -657,7 +657,7 @@ int main(int argc, char* argv[]){
 
 	int option = 0, regis = 0, login = 0, numAns = 0, num = 0;
 
-	char username[20], password[20], chuoi[10] = "abc";
+	char username[20], password[20], chuoi[10] = "abc", chuoi1[100] = "Lựa chọn còn lại: " ;
 	
 
     // communicate with client
@@ -817,6 +817,7 @@ int main(int argc, char* argv[]){
 										snprintf(chuoi,sizeof(chuoi), "%d", point);
 										strcat(messagePoint, chuoi);
 										sendMess(messagePoint, connfd, (struct sockaddr*) &cliaddr);
+										strcpy(messagePoint, "Bạn đã thua cuộc. Số điểm bạn có là: ");
 										point = 0;
 										login = 2;
 									}else
@@ -835,9 +836,10 @@ int main(int argc, char* argv[]){
 										strcat(chuoi1, "\t");
 										strcat(chuoi1, AnsRand);
 										sendMess(chuoi1, connfd, (struct sockaddr*) &cliaddr);
+										strcpy(chuoi1, "Lựa chọn còn lại: ");
 									
 									}else if(strcmp(buff, "A") != 0 && strcmp(buff, "B") != 0  && strcmp(buff, "C") != 0 && strcmp(buff, "D") != 0){
-										sendMess("Nhap sai cu phap dap an.", connfd, (struct sockaddr*) &cliaddr);
+										sendMess("Nhập sai cú pháp lựa chọn đáp án. Hãy nhập lại!", connfd, (struct sockaddr*) &cliaddr);
 									}
 									else{
 										if(strcmp(buff, questionEasy[i].answer) == 0){
@@ -852,15 +854,14 @@ int main(int argc, char* argv[]){
 												point = 0;
 												login = 2;
 												i = 0;
-												chuoi[0] = '\0';
 											}
 										}else{
 											insertScore("Dễ", acc->username, point);
 											writeFileScore();
 											snprintf(chuoi,sizeof(chuoi), "%d", point);
 											strcat(messagePoint, chuoi);
-											chuoi[0] = '\0';
 											sendMess(messagePoint, connfd, (struct sockaddr*) &cliaddr);
+											strcpy(messagePoint, "Bạn đã thua cuộc. Số điểm bạn có là: ");
 											point = 0;
 											login = 2;
 											i = 0;
@@ -881,6 +882,7 @@ int main(int argc, char* argv[]){
 										snprintf(chuoi,sizeof(chuoi), "%d", point);
 										strcat(messagePoint, chuoi);
 										sendMess(messagePoint, connfd, (struct sockaddr*) &cliaddr);
+										strcpy(messagePoint, "Bạn đã thua cuộc. Số điểm bạn có là: ");
 										point = 0;
 										login = 2;
 									}else
@@ -899,9 +901,10 @@ int main(int argc, char* argv[]){
 										strcat(chuoi1, "\t");
 										strcat(chuoi1, AnsRand);
 										sendMess(chuoi1, connfd, (struct sockaddr*) &cliaddr);
+										strcpy(chuoi1, "Lựa chọn còn lại: ");
 									
 									}else if(strcmp(buff, "A") != 0 && strcmp(buff, "B") != 0  && strcmp(buff, "C") != 0 && strcmp(buff, "D") != 0){
-										sendMess("Nhap sai cu phap dap an.", connfd, (struct sockaddr*) &cliaddr);
+										sendMess("Nhập sai cú pháp lựa chọn đáp án. Hãy nhập lại!", connfd, (struct sockaddr*) &cliaddr);
 									}
 									else{
 										if(strcmp(buff, questionMod[i].answer) == 0){
@@ -925,6 +928,7 @@ int main(int argc, char* argv[]){
 											strcat(messagePoint, chuoi);
 											chuoi[0] = '\0';
 											sendMess(messagePoint, connfd, (struct sockaddr*) &cliaddr);
+											strcpy(messagePoint, "Bạn đã thua cuộc. Số điểm bạn có là: ");
 											point = 0;
 											login = 2;
 											i = 0;
@@ -946,6 +950,7 @@ int main(int argc, char* argv[]){
 										snprintf(chuoi,sizeof(chuoi), "%d", point);
 										strcat(messagePoint, chuoi);
 										sendMess(messagePoint, connfd, (struct sockaddr*) &cliaddr);
+										strcpy(messagePoint, "Bạn đã thua cuộc. Số điểm bạn có là: ");
 										point = 0;
 										login = 2;
 									}else
@@ -964,9 +969,10 @@ int main(int argc, char* argv[]){
 										strcat(chuoi1, "\t");
 										strcat(chuoi1, AnsRand);
 										sendMess(chuoi1, connfd, (struct sockaddr*) &cliaddr);
+										strcpy(chuoi1, "Lựa chọn còn lại: ");
 									
 									}else if(strcmp(buff, "A") != 0 && strcmp(buff, "B") != 0  && strcmp(buff, "C") != 0 && strcmp(buff, "D") != 0){
-										sendMess("Nhap sai cu phap dap an.", connfd, (struct sockaddr*) &cliaddr);
+										sendMess("Nhập sai cú pháp lựa chọn đáp án. Hãy nhập lại!", connfd, (struct sockaddr*) &cliaddr);
 									}
 									else{
 										if(strcmp(buff, questionHard[i].answer) == 0){
@@ -990,6 +996,7 @@ int main(int argc, char* argv[]){
 											strcat(messagePoint, chuoi);
 											chuoi[0] = '\0';
 											sendMess(messagePoint, connfd, (struct sockaddr*) &cliaddr);
+											strcpy(messagePoint, "Bạn đã thua cuộc. Số điểm bạn có là: ");
 											point = 0;
 											login = 2;
 											i = 0;

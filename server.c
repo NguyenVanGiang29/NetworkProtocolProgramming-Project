@@ -18,7 +18,7 @@
 int count = 0, check = 0, NumberQuestion = 0, i = 0, point = 0, tus1 = 0, tus2 = 0;
 char message[200] = "Goodbye ", code[200], messagePoint[200] = "Bạn đã thua cuộc. Số điểm bạn có là: ";
 char level[10];
-char *strScore, *AnsRand;
+char *strScore, *AnsRand, *strInstr;
 //Account
 typedef struct node {
   	char username[20];
@@ -516,6 +516,26 @@ char *special_char_remplace(){
     return readedContent;
 }
 
+char *special_char_remplace1(){
+
+    size_t len, bytesRead;
+    char *readedContent;
+    FILE* f2;
+
+    f2 = fopen("instruction.txt", "rb");
+
+    fseek(f2, 0, SEEK_END);
+    len = ftell(f2);
+    rewind(f2);
+
+    readedContent = (char*) malloc(sizeof(char) * len + 1);
+    readedContent[len] = '\0';                      // Is needed only for printing to stdout with printf
+
+    bytesRead = fread(readedContent, sizeof(char), len, f2);
+    fclose(f2);
+    return readedContent;
+}
+
 void sendMess(char *content, int sockfd, struct sockaddr *servaddr){
 	int len, sendBytes;
 	  
@@ -620,7 +640,7 @@ int main(int argc, char* argv[]){
 	openFileScore();
 
 	strScore = special_char_remplace();
-				
+	strInstr = special_char_remplace1();
 	
 
 	pid_t pid;
@@ -764,6 +784,9 @@ int main(int argc, char* argv[]){
 									{
 										login = 2;
 										sendMess(strScore, connfd, (struct sockaddr*) &cliaddr);
+									}else if(strcmp(buff, "2-5") == 0){
+										login = 2;
+										sendMess(strInstr, connfd, (struct sockaddr*) &cliaddr);
 									}
 									else
 									{

@@ -1,0 +1,9 @@
+Có 3 mức độ câu hỏi cho bạn lựa chọn:
+1. Dễ
+2. Trung bình
+3. Khó
+Mỗi phần chơi gồm có 15 câu hỏi tương với số điểm mỗi tùy vào mức độ mà bạn lựa chọn:
+- Dễ : 100 điểm/câu
+- Trung bình : 200 điểm/câu
+- Khó : 300 điểm/câu
+Nếu bạn vượt qua 15 câu hỏi thì bạn sẽ trở thành triệu phú!

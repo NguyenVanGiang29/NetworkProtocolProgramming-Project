@@ -124,7 +124,8 @@ void Play(){
     printf("%s\n", "2-2. Đổi mật khẩu");
     printf("%s\n", "2-3. Đăng xuất");
     printf("%s\n", "2-4. Xem điểm");
-    printf("%s\n", "Hãy lựa chọn(2-1 -> 2-4)");
+    printf("%s\n", "2-5. Hướng dẫn chơi");
+    printf("%s\n", "Hãy lựa chọn(2-1 -> 2-5)");
 }
 
 void Question(){

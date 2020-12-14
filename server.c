@@ -629,7 +629,26 @@ char *changeInttoStr(int a){
 		return b = "D";
 	}
 	
+}
+
+void swap (Question *a, Question *b) 
+{ 
+    Question temp = *a; 
+    *a = *b; 
+    *b = temp; 
 } 
+  
+// A function to generate a random permutation of arr[] 
+void randomize ( Question arr[], int n ) 
+{ 
+    srand ( time(NULL) ); 
+
+    for (int i = n-1; i > 0; i--) 
+    { 
+        int j = rand() % (i+1); 
+        swap(&arr[i], &arr[j]); 
+    } 
+}
 
 pid_t fork(void);
 
@@ -832,6 +851,7 @@ int main(int argc, char* argv[]){
 		//Case 5 + 6 : Question Easy
 								case 5:
 									if(strcmp(buff, "SS") == 0 || strcmp(buff, "OK") == 0){
+										randomize(questionEasy, 30);
 										sendMess(questionEasy[i].word, connfd, (struct sockaddr*) &cliaddr);
 										login = 6;
 									}else if(strcmp(buff, "STOP") == 0){
@@ -862,7 +882,7 @@ int main(int argc, char* argv[]){
 										strcpy(chuoi1, "Lựa chọn còn lại: ");
 									
 									}else if(strcmp(buff, "A") != 0 && strcmp(buff, "B") != 0  && strcmp(buff, "C") != 0 && strcmp(buff, "D") != 0){
-										sendMess("Nhập sai cú pháp lựa chọn đáp án. Hãy nhập lại!", connfd, (struct sockaddr*) &cliaddr);
+										sendMess("Nhập sai cú pháp lựa chọn đáp án. Hoặc nhập \"H\" để nhận được sự trợ giúp 50/50. Mời nhập lại!", connfd, (struct sockaddr*) &cliaddr);
 									}
 									else{
 										if(strcmp(buff, questionEasy[i].answer) == 0){
@@ -897,6 +917,7 @@ int main(int argc, char* argv[]){
 		//Case 7 + 8 : Question Mod
 								case 7:
 									if(strcmp(buff, "SS") == 0 || strcmp(buff, "OK") == 0){
+										randomize(questionEasy, 30);
 										sendMess(questionMod[i].word, connfd, (struct sockaddr*) &cliaddr);
 										login = 8;
 									}else if(strcmp(buff, "STOP") == 0){
@@ -916,7 +937,7 @@ int main(int argc, char* argv[]){
 									break;
 
 								case 8:
-									if(strcmp(buff, "H") == 0){
+									if(strcmp(buff, "help") == 0){
 										num = changeStrtoInt(questionMod[i].answer);
 										numAns = ranDomAns(num);
 										AnsRand = changeInttoStr(numAns);
@@ -964,6 +985,7 @@ int main(int argc, char* argv[]){
 		//Case 9 + 10 : Question Hard							
 								case 9:
 									if(strcmp(buff, "SS") == 0 || strcmp(buff, "OK") == 0){
+										randomize(questionEasy, 30);
 										sendMess(questionHard[i].word, connfd, (struct sockaddr*) &cliaddr);
 										login = 10;
 									}

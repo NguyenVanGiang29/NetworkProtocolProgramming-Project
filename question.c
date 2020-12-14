@@ -276,6 +276,33 @@ int ranDomAns(int a){
     
 } 
 
+void swap (Question *a, Question *b) 
+{ 
+    Question temp = *a; 
+    *a = *b; 
+    *b = temp; 
+} 
+  
+  
+// A function to generate a random permutation of arr[] 
+void randomize ( Question arr[], int n ) 
+{ 
+    // Use a different seed value so that we don't get same 
+    // result each time we run this program 
+    srand ( time(NULL) ); 
+  
+    // Start from the last element and swap one by one. We don't 
+    // need to run for the first element that's why i > 0 
+    for (int i = n-1; i > 0; i--) 
+    { 
+        // Pick a random index from 0 to i 
+        int j = rand() % (i+1); 
+  
+        // Swap arr[i] with the element at random index 
+        swap(&arr[i], &arr[j]); 
+    } 
+}
+
 int main(){
     char level[5];
     char aName[20];

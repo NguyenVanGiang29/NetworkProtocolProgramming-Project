@@ -9,6 +9,30 @@
 #define MAXLINE 1000
 #define MAX_LISTEN_QUEUE 1000
 
+void Ailatrieuphu(){
+    printf("%s\n", "----- GAME AI LÀ TRIỆU PHÚ -----");
+    printf("%s\n", "1. Đăng kí");
+    printf("%s\n", "2. Đăng nhập");
+    printf("%s\n", "Hãy lựa chọn(1-2)");
+}
+
+void Play(){
+    printf("%s\n", "----- GAME AI LÀ TRIỆU PHÚ -----");
+    printf("%s\n", "2-1. Chơi");
+    printf("%s\n", "2-2. Đổi mật khẩu");
+    printf("%s\n", "2-3. Đăng xuất");
+    printf("%s\n", "2-4. Xem điểm");
+    printf("%s\n", "2-5. Hướng dẫn chơi");
+    printf("%s\n", "Hãy lựa chọn(2-1 -> 2-5)");
+}
+
+void Question(){
+    printf("%s\n", "Mức độ chơi");
+    printf("%s\n", "Mức Dễ  (Nhập \"D\")");
+    printf("%s\n", "Mức Trung Bình  (Nhập \"BT\")");
+    printf("%s\n", "Mức Khó  (Nhập \"K\")");
+}
+
 int main(int argc, char *argv[]){
     int sockfd, serverPortNum, sendBytes, rcvBytes;
     struct sockaddr_in servaddr;
@@ -108,29 +132,11 @@ int main(int argc, char *argv[]){
         {
             Play();
         }
+
+        if(strcmp(server_response, "Bạn đã trở thành triệu phú. Chúc mừng bạn!") == 0 )
+        {
+            Play();
+        }
+
     }
-}
-
-void Ailatrieuphu(){
-    printf("%s\n", "----- GAME AI LÀ TRIỆU PHÚ -----");
-    printf("%s\n", "1. Đăng kí");
-    printf("%s\n", "2. Đăng nhập");
-    printf("%s\n", "Hãy lựa chọn(1-2)");
-}
-
-void Play(){
-    printf("%s\n", "----- GAME AI LÀ TRIỆU PHÚ -----");
-    printf("%s\n", "2-1. Chơi");
-    printf("%s\n", "2-2. Đổi mật khẩu");
-    printf("%s\n", "2-3. Đăng xuất");
-    printf("%s\n", "2-4. Xem điểm");
-    printf("%s\n", "2-5. Hướng dẫn chơi");
-    printf("%s\n", "Hãy lựa chọn(2-1 -> 2-5)");
-}
-
-void Question(){
-    printf("%s\n", "Mức độ chơi");
-    printf("%s\n", "Mức Dễ  (Nhập \"D\")");
-    printf("%s\n", "Mức Trung Bình  (Nhập \"BT\")");
-    printf("%s\n", "Mức Khó  (Nhập \"K\")");
 }

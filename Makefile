@@ -5,7 +5,7 @@ all:
 
 s: 
 	clear
-	./server 8080
+	./server 8088
 c:
 	clear
-	./client 127.0.0.1 8080
+	./client 127.0.0.1 8088

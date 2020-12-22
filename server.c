@@ -829,15 +829,18 @@ int main(int argc, char* argv[]){
 
 								case 4:
 									if(strcmp(buff, "D") == 0){
+										randomize(questionEasy, 15);
 										sendMess("Bạn đã sẵn sàng chưa? (Nhập \"SS\" để bắt đầu)", connfd, (struct sockaddr*) &cliaddr);
 										login = 5;
 									}else if (strcmp(buff, "BT") == 0)
 									{
+										randomize(questionMod, 30);
 										sendMess("Bạn đã sẵn sàng chưa? ( Nhập \"SS\" để bắt đầu)", connfd, (struct sockaddr*) &cliaddr);
 										login = 7;
 									}
 									else if (strcmp(buff, "K") == 0)
 									{
+										randomize(questionMod, 30);
 										sendMess("Bạn đã sẵn sàng chưa? ( Nhập \"SS\" để bắt đầu)", connfd, (struct sockaddr*) &cliaddr);
 										login = 9;
 									}else
@@ -851,7 +854,6 @@ int main(int argc, char* argv[]){
 		//Case 5 + 6 : Question Easy
 								case 5:
 									if(strcmp(buff, "SS") == 0 || strcmp(buff, "OK") == 0){
-										randomize(questionEasy, 30);
 										sendMess(questionEasy[i].word, connfd, (struct sockaddr*) &cliaddr);
 										login = 6;
 									}else if(strcmp(buff, "STOP") == 0){
@@ -903,6 +905,8 @@ int main(int argc, char* argv[]){
 											writeFileScore();
 											snprintf(chuoi,sizeof(chuoi), "%d", point);
 											strcat(messagePoint, chuoi);
+											strcat(messagePoint, ". Đáp án là:");
+											strcat(messagePoint, questionEasy[i].answer);
 											sendMess(messagePoint, connfd, (struct sockaddr*) &cliaddr);
 											strcpy(messagePoint, "Bạn đã thua cuộc. Số điểm bạn có là: ");
 											point = 0;
@@ -917,7 +921,6 @@ int main(int argc, char* argv[]){
 		//Case 7 + 8 : Question Mod
 								case 7:
 									if(strcmp(buff, "SS") == 0 || strcmp(buff, "OK") == 0){
-										randomize(questionEasy, 30);
 										sendMess(questionMod[i].word, connfd, (struct sockaddr*) &cliaddr);
 										login = 8;
 									}else if(strcmp(buff, "STOP") == 0){
@@ -937,7 +940,7 @@ int main(int argc, char* argv[]){
 									break;
 
 								case 8:
-									if(strcmp(buff, "help") == 0){
+									if(strcmp(buff, "H") == 0){
 										num = changeStrtoInt(questionMod[i].answer);
 										numAns = ranDomAns(num);
 										AnsRand = changeInttoStr(numAns);
@@ -954,7 +957,7 @@ int main(int argc, char* argv[]){
 										if(strcmp(buff, questionMod[i].answer) == 0){
 											if(i < 15){	
 												i++;
-												login = 5;
+												login = 7;
 												point = point + 200;
 												sendMess("Đáp án chính xác.", connfd, (struct sockaddr*) &cliaddr);
 											}else
@@ -970,7 +973,8 @@ int main(int argc, char* argv[]){
 											writeFileScore();
 											snprintf(chuoi,sizeof(chuoi), "%d", point);
 											strcat(messagePoint, chuoi);
-											chuoi[0] = '\0';
+											strcat(messagePoint, ". Đáp án là:");
+											strcat(messagePoint, questionMod[i].answer);
 											sendMess(messagePoint, connfd, (struct sockaddr*) &cliaddr);
 											strcpy(messagePoint, "Bạn đã thua cuộc. Số điểm bạn có là: ");
 											point = 0;
@@ -985,7 +989,6 @@ int main(int argc, char* argv[]){
 		//Case 9 + 10 : Question Hard							
 								case 9:
 									if(strcmp(buff, "SS") == 0 || strcmp(buff, "OK") == 0){
-										randomize(questionEasy, 30);
 										sendMess(questionHard[i].word, connfd, (struct sockaddr*) &cliaddr);
 										login = 10;
 									}
@@ -1023,7 +1026,7 @@ int main(int argc, char* argv[]){
 										if(strcmp(buff, questionHard[i].answer) == 0){
 											if(i < 15){	
 												i++;
-												login = 5;
+												login = 9;
 												point = point + 300;
 												sendMess("Đáp án chính xác.", connfd, (struct sockaddr*) &cliaddr);
 											}else
@@ -1039,7 +1042,8 @@ int main(int argc, char* argv[]){
 											writeFileScore();
 											snprintf(chuoi,sizeof(chuoi), "%d", point);
 											strcat(messagePoint, chuoi);
-											chuoi[0] = '\0';
+											strcat(messagePoint, ". Đáp án là:");
+											strcat(messagePoint, questionHard[i].answer);
 											sendMess(messagePoint, connfd, (struct sockaddr*) &cliaddr);
 											strcpy(messagePoint, "Bạn đã thua cuộc. Số điểm bạn có là: ");
 											point = 0;

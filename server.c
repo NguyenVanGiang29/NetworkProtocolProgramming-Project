@@ -15,7 +15,7 @@
 #define MAXLINE 100
 #define MAX_LISTEN_QUEUE 100
 
-int count = 0, check = 0, NumberQuestion = 0, i = 0, point = 0, tus1 = 0, tus2 = 0;
+int count = 0, check = 0, NumberQuestion = 0, i = 0, point = 0, tus1 = 0, tus2 = 0, aTime = 0;
 char message[200] = "Goodbye ", code[200], messagePoint[200] = "Bạn đã thua cuộc. Số điểm bạn có là: ";
 char level[10];
 char *strScore, *AnsRand, *strInstr;
@@ -874,14 +874,21 @@ int main(int argc, char* argv[]){
 
 								case 6:
 									if(strcmp(buff, "H") == 0){
-										num = changeStrtoInt(questionEasy[i].answer);
-										numAns = ranDomAns(num);
-										AnsRand = changeInttoStr(numAns);
-										strcat(chuoi1, questionEasy[i].answer);
-										strcat(chuoi1, "\t");
-										strcat(chuoi1, AnsRand);
-										sendMess(chuoi1, connfd, (struct sockaddr*) &cliaddr);
-										strcpy(chuoi1, "Lựa chọn còn lại: ");
+										if(aTime<2){
+											num = changeStrtoInt(questionEasy[i].answer);
+											numAns = ranDomAns(num);
+											AnsRand = changeInttoStr(numAns);
+											strcat(chuoi1, questionEasy[i].answer);
+											strcat(chuoi1, "\t");
+											strcat(chuoi1, AnsRand);
+											sendMess(chuoi1, connfd, (struct sockaddr*) &cliaddr);
+											strcpy(chuoi1, "Lựa chọn còn lại: ");
+											aTime++;
+										}else
+										{
+											sendMess("Bạn đã sử dụng hết sự trợ giúp! Suy nghĩ kĩ rồi đưa ra đáp án cuối cùng.", connfd, (struct sockaddr*) &cliaddr);
+										}
+										
 									
 									}else if(strcmp(buff, "A") != 0 && strcmp(buff, "B") != 0  && strcmp(buff, "C") != 0 && strcmp(buff, "D") != 0){
 										sendMess("Nhập sai cú pháp lựa chọn đáp án. Hoặc nhập \"H\" để nhận được sự trợ giúp 50/50. Mời nhập lại!", connfd, (struct sockaddr*) &cliaddr);
@@ -898,6 +905,7 @@ int main(int argc, char* argv[]){
 												sendMess("Bạn đã trở thành triệu phú. Chúc mừng bạn!", connfd, (struct sockaddr*) &cliaddr);
 												point = 0;
 												login = 2;
+												aTime = 0;
 												i = 0;
 											}
 										}else{
@@ -909,6 +917,7 @@ int main(int argc, char* argv[]){
 											strcat(messagePoint, questionEasy[i].answer);
 											sendMess(messagePoint, connfd, (struct sockaddr*) &cliaddr);
 											strcpy(messagePoint, "Bạn đã thua cuộc. Số điểm bạn có là: ");
+											aTime = 0;
 											point = 0;
 											login = 2;
 											i = 0;
@@ -941,14 +950,20 @@ int main(int argc, char* argv[]){
 
 								case 8:
 									if(strcmp(buff, "H") == 0){
-										num = changeStrtoInt(questionMod[i].answer);
-										numAns = ranDomAns(num);
-										AnsRand = changeInttoStr(numAns);
-										strcat(chuoi1, questionMod[i].answer);
-										strcat(chuoi1, "\t");
-										strcat(chuoi1, AnsRand);
-										sendMess(chuoi1, connfd, (struct sockaddr*) &cliaddr);
-										strcpy(chuoi1, "Lựa chọn còn lại: ");
+										if(aTime<2){
+											num = changeStrtoInt(questionMod[i].answer);
+											numAns = ranDomAns(num);
+											AnsRand = changeInttoStr(numAns);
+											strcat(chuoi1, questionMod[i].answer);
+											strcat(chuoi1, "\t");
+											strcat(chuoi1, AnsRand);
+											sendMess(chuoi1, connfd, (struct sockaddr*) &cliaddr);
+											strcpy(chuoi1, "Lựa chọn còn lại: ");
+											aTime++;
+										}else
+										{
+											sendMess("Bạn đã sử dụng hết sự trợ giúp! Suy nghĩ kĩ rồi đưa ra đáp án cuối cùng.", connfd, (struct sockaddr*) &cliaddr);
+										}
 									
 									}else if(strcmp(buff, "A") != 0 && strcmp(buff, "B") != 0  && strcmp(buff, "C") != 0 && strcmp(buff, "D") != 0){
 										sendMess("Nhập sai cú pháp lựa chọn đáp án. Hãy nhập lại!", connfd, (struct sockaddr*) &cliaddr);
@@ -966,6 +981,7 @@ int main(int argc, char* argv[]){
 												point = 0;
 												login = 2;
 												i = 0;
+												aTime = 0;
 												chuoi[0] = '\0';
 											}
 										}else{
@@ -977,6 +993,7 @@ int main(int argc, char* argv[]){
 											strcat(messagePoint, questionMod[i].answer);
 											sendMess(messagePoint, connfd, (struct sockaddr*) &cliaddr);
 											strcpy(messagePoint, "Bạn đã thua cuộc. Số điểm bạn có là: ");
+											aTime = 0;
 											point = 0;
 											login = 2;
 											i = 0;
@@ -1010,14 +1027,20 @@ int main(int argc, char* argv[]){
 
 								case 10:
 									if(strcmp(buff, "H") == 0){
-										num = changeStrtoInt(questionHard[i].answer);
-										numAns = ranDomAns(num);
-										AnsRand = changeInttoStr(numAns);
-										strcat(chuoi1, questionHard[i].answer);
-										strcat(chuoi1, "\t");
-										strcat(chuoi1, AnsRand);
-										sendMess(chuoi1, connfd, (struct sockaddr*) &cliaddr);
-										strcpy(chuoi1, "Lựa chọn còn lại: ");
+										if(aTime<2){
+											num = changeStrtoInt(questionHard[i].answer);
+											numAns = ranDomAns(num);
+											AnsRand = changeInttoStr(numAns);
+											strcat(chuoi1, questionHard[i].answer);
+											strcat(chuoi1, "\t");
+											strcat(chuoi1, AnsRand);
+											sendMess(chuoi1, connfd, (struct sockaddr*) &cliaddr);
+											strcpy(chuoi1, "Lựa chọn còn lại: ");
+										}else
+										{
+											sendMess("Bạn đã sử dụng hết sự trợ giúp! Suy nghĩ kĩ rồi đưa ra đáp án cuối cùng.", connfd, (struct sockaddr*) &cliaddr);
+										}
+										
 									
 									}else if(strcmp(buff, "A") != 0 && strcmp(buff, "B") != 0  && strcmp(buff, "C") != 0 && strcmp(buff, "D") != 0){
 										sendMess("Nhập sai cú pháp lựa chọn đáp án. Hãy nhập lại!", connfd, (struct sockaddr*) &cliaddr);
@@ -1035,6 +1058,7 @@ int main(int argc, char* argv[]){
 												point = 0;
 												login = 2;
 												i = 0;
+												aTime = 0;
 												chuoi[0] = '\0';
 											}
 										}else{
@@ -1046,6 +1070,7 @@ int main(int argc, char* argv[]){
 											strcat(messagePoint, questionHard[i].answer);
 											sendMess(messagePoint, connfd, (struct sockaddr*) &cliaddr);
 											strcpy(messagePoint, "Bạn đã thua cuộc. Số điểm bạn có là: ");
+											aTime = 0;
 											point = 0;
 											login = 2;
 											i = 0;

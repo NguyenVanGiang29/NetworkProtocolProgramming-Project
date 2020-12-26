@@ -1,9 +1,23 @@
-Có 3 mức độ câu hỏi cho bạn lựa chọn:
-1. Dễ
-2. Trung bình
-3. Khó
-Mỗi phần chơi gồm có 15 câu hỏi tương với số điểm mỗi tùy vào mức độ mà bạn lựa chọn:
-- Dễ : 100 điểm/câu
-- Trung bình : 200 điểm/câu
-- Khó : 300 điểm/câu
-Nếu bạn vượt qua 15 câu hỏi thì bạn sẽ trở thành triệu phú!
+ ==============        Hướng dẫn         =============
+    Có 3 mức độ câu hỏi cho bạn lựa chọn:
+        1. Dễ
+        2. Trung bình
+        3. Khó  
+    Mỗi phần chơi gồm có 15 câu hỏi tương với số điểm mỗi tùy vào mức độ mà bạn lựa chọn:
+        - Dễ : 100 điểm/câu
+        - Trung bình : 200 điểm/câu
+        - Khó : 300 điểm/câu
+    Người chơi có 1 quyền trợ giúp 50/50, được sử dụng 2 lần ở mỗi phần thi
+    $ Nếu bạn vượt qua 15 câu hỏi thì bạn sẽ trở thành triệu phú!
+
+Các lệch: 
+    - Lựa chọn mức độ chơi:
+       + Dễ: 'D'
+       + Bình thường: 'BT'
+       + Khó: 'K'
+    - Sẵn sàng chơi: 'SS'
+    - Chuyển sang câu tiếp theo: 'OK'
+    - Sự trợ giúp: 'H'
+    - Dừng cuộc chơi: 'STOP'
+
+<3 CHÚC MỌI NGƯỜI CHƠI GAME VUI VẺ ^^

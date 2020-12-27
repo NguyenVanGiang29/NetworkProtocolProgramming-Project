@@ -15,7 +15,7 @@
 #define MAXLINE 100
 #define MAX_LISTEN_QUEUE 100
 
-int count = 0, check = 0, NumberQuestion = 0, i = 0, point = 0, tus1 = 0, tus2 = 0, aTime = 0;
+int count = 0, check = 0, NumberQuestion = 0, i = 0, point = 0, tus1 = 0, tus2 = 0, aTime = 0, aTime1 = 0;
 char message[200] = "Goodbye ", code[200], messagePoint[200] = "Bạn đã thua cuộc. Số điểm bạn có là: ";
 char level[10];
 char *strScore, *AnsRand, *strInstr;
@@ -51,7 +51,7 @@ Bank setEasy[30];
 Bank setHard[30];
 Bank setMod[30];
 
-Question questionEasy[30];
+Question questionEasy[45];
 Question questionHard[30];
 Question questionMod[30];
 
@@ -68,7 +68,7 @@ void doEASYROUND(){ // Gets and stores questions for Easy Round
     }
     else{
         while(!feof(eBank)){
-            for(int x=0; x<30; x++){ // Reads the questions from file
+            for(int x=0; x<45; x++){ // Reads the questions from file
                 fgets(setEasy[x].question, 120, eBank);
                 fgets(setEasy[x].choiceA, 70, eBank);
                 fgets(setEasy[x].choiceB, 70, eBank);
@@ -125,7 +125,7 @@ void doHARDROUND(){ // Gets and stores questions for Hard Round
 void makeQuesEasy(){
     Question *buff;
     doEASYROUND();
-    for (int i = 0; i < 30; i++)
+    for (int i = 0; i < 45; i++)
     {
         buff = (Question *)malloc(sizeof(Question));
         strcpy((*buff).word, setEasy[i].question);
@@ -658,8 +658,8 @@ int main(int argc, char* argv[]){
     openFile();
 	openFileScore();
 
-	strScore = special_char_remplace();
-	strInstr = special_char_remplace1();
+	// strScore = special_char_remplace();
+	// strInstr = special_char_remplace1();
 	
 
 	pid_t pid;
@@ -766,7 +766,16 @@ int main(int argc, char* argv[]){
 								case 0:
 									acc = find(buff);
 									if(acc == NULL){
-										sendMess("Tên đăng nhập không đúng! Hãy nhập lại.", connfd, (struct sockaddr*) &cliaddr);
+										if(aTime1<3){
+											sendMess("Tên đăng nhập không đúng! Hãy nhập lại.", connfd, (struct sockaddr*) &cliaddr);
+											aTime1++;
+										}else
+										{
+											sendMess("Tên đăng nhập không đúng! Hãy nhập lại. Hoặc nhập 'E' để thoát", connfd, (struct sockaddr*) &cliaddr);
+											aTime1 = 0;
+											login = 11;
+										}
+										
 									}else{
 										sendMess("Mật khẩu:", connfd, (struct sockaddr*) &cliaddr);
 										login = 1;
@@ -800,10 +809,12 @@ int main(int argc, char* argv[]){
 										sendMess("Đã đăng xuất.", connfd, (struct sockaddr*) &cliaddr);
 									}
 									else if(strcmp(buff, "2-4") == 0)
-									{
+									{	
+										strScore = special_char_remplace();
 										login = 2;
 										sendMess(strScore, connfd, (struct sockaddr*) &cliaddr);
 									}else if(strcmp(buff, "2-5") == 0){
+										strInstr = special_char_remplace1();
 										login = 2;
 										sendMess(strInstr, connfd, (struct sockaddr*) &cliaddr);
 									}
@@ -829,7 +840,7 @@ int main(int argc, char* argv[]){
 
 								case 4:
 									if(strcmp(buff, "D") == 0){
-										randomize(questionEasy, 15);
+										randomize(questionEasy, 45);
 										sendMess("Bạn đã sẵn sàng chưa? (Nhập \"SS\" để bắt đầu)", connfd, (struct sockaddr*) &cliaddr);
 										login = 5;
 									}else if (strcmp(buff, "BT") == 0)
@@ -840,7 +851,7 @@ int main(int argc, char* argv[]){
 									}
 									else if (strcmp(buff, "K") == 0)
 									{
-										randomize(questionMod, 30);
+										randomize(questionHard, 30);
 										sendMess("Bạn đã sẵn sàng chưa? ( Nhập \"SS\" để bắt đầu)", connfd, (struct sockaddr*) &cliaddr);
 										login = 9;
 									}else
@@ -865,6 +876,7 @@ int main(int argc, char* argv[]){
 										strcpy(messagePoint, "Bạn đã thua cuộc. Số điểm bạn có là: ");
 										point = 0;
 										login = 2;
+										aTime = 0;
 									}else
 									{
 										sendMess("Sai cú pháp.", connfd, (struct sockaddr*) &cliaddr);
@@ -886,14 +898,26 @@ int main(int argc, char* argv[]){
 											aTime++;
 										}else
 										{
-											sendMess("Bạn đã sử dụng hết sự trợ giúp! Suy nghĩ kĩ rồi đưa ra đáp án cuối cùng.", connfd, (struct sockaddr*) &cliaddr);
+											sendMess("Bạn đã sử dụng hết sự trợ giúp! Suy nghĩ kĩ rồi đưa ra đáp án cuối cùng. Nhập 'STOP' để dừng cuộc chơi.", connfd, (struct sockaddr*) &cliaddr);
 										}
 										
 									
 									}else if(strcmp(buff, "A") != 0 && strcmp(buff, "B") != 0  && strcmp(buff, "C") != 0 && strcmp(buff, "D") != 0){
-										sendMess("Nhập sai cú pháp lựa chọn đáp án. Hoặc nhập \"H\" để nhận được sự trợ giúp 50/50. Mời nhập lại!", connfd, (struct sockaddr*) &cliaddr);
-									}
-									else{
+										if(strcmp(buff, "STOP") == 0)
+										{
+											insertScore("Dễ", acc->username, point);
+											writeFileScore();
+											snprintf(chuoi,sizeof(chuoi), "%d", point);
+											strcat(messagePoint, chuoi);
+											sendMess(messagePoint, connfd, (struct sockaddr*) &cliaddr);
+											strcpy(messagePoint, "Bạn đã thua cuộc. Số điểm bạn có là: ");
+											point = 0;
+											aTime = 0;
+											login = 2;
+										}else{
+											sendMess("Nhập sai cú pháp lựa chọn đáp án. Hoặc nhập \"H\" để nhận được sự trợ giúp 50/50. Nhập 'STOP' để dừng cuộc chơi. Mời nhập lại!", connfd, (struct sockaddr*) &cliaddr);
+										}
+									}else{
 										if(strcmp(buff, questionEasy[i].answer) == 0){
 											if(i < 15){	
 												i++;
@@ -933,12 +957,13 @@ int main(int argc, char* argv[]){
 										sendMess(questionMod[i].word, connfd, (struct sockaddr*) &cliaddr);
 										login = 8;
 									}else if(strcmp(buff, "STOP") == 0){
-										insertScore("Trung bình", acc->username, point);
+										insertScore("TB", acc->username, point);
 										writeFileScore();
 										snprintf(chuoi,sizeof(chuoi), "%d", point);
 										strcat(messagePoint, chuoi);
 										sendMess(messagePoint, connfd, (struct sockaddr*) &cliaddr);
 										strcpy(messagePoint, "Bạn đã thua cuộc. Số điểm bạn có là: ");
+										aTime = 0;
 										point = 0;
 										login = 2;
 									}else
@@ -962,11 +987,23 @@ int main(int argc, char* argv[]){
 											aTime++;
 										}else
 										{
-											sendMess("Bạn đã sử dụng hết sự trợ giúp! Suy nghĩ kĩ rồi đưa ra đáp án cuối cùng.", connfd, (struct sockaddr*) &cliaddr);
+											sendMess("Bạn đã sử dụng hết sự trợ giúp! Suy nghĩ kĩ rồi đưa ra đáp án cuối cùng. Nhập 'STOP' để dừng cuộc chơi.", connfd, (struct sockaddr*) &cliaddr);
 										}
 									
 									}else if(strcmp(buff, "A") != 0 && strcmp(buff, "B") != 0  && strcmp(buff, "C") != 0 && strcmp(buff, "D") != 0){
-										sendMess("Nhập sai cú pháp lựa chọn đáp án. Hãy nhập lại!", connfd, (struct sockaddr*) &cliaddr);
+										if(strcmp(buff, "STOP") == 0){
+											insertScore("TB", acc->username, point);
+											writeFileScore();
+											snprintf(chuoi,sizeof(chuoi), "%d", point);
+											strcat(messagePoint, chuoi);
+											sendMess(messagePoint, connfd, (struct sockaddr*) &cliaddr);
+											strcpy(messagePoint, "Bạn đã thua cuộc. Số điểm bạn có là: ");
+											aTime = 0;
+											point = 0;
+											login = 2;
+										}else{
+											sendMess("Nhập sai cú pháp lựa chọn đáp án. Hoặc nhập \"H\" để nhận được sự trợ giúp 50/50. Nhập 'STOP' để dừng cuộc chơi. Mời nhập lại!", connfd, (struct sockaddr*) &cliaddr);
+										}
 									}
 									else{
 										if(strcmp(buff, questionMod[i].answer) == 0){
@@ -985,7 +1022,7 @@ int main(int argc, char* argv[]){
 												chuoi[0] = '\0';
 											}
 										}else{
-											insertScore("Trung bình", acc->username, point);
+											insertScore("TB", acc->username, point);
 											writeFileScore();
 											snprintf(chuoi,sizeof(chuoi), "%d", point);
 											strcat(messagePoint, chuoi);
@@ -1018,6 +1055,7 @@ int main(int argc, char* argv[]){
 										strcpy(messagePoint, "Bạn đã thua cuộc. Số điểm bạn có là: ");
 										point = 0;
 										login = 2;
+										aTime = 0;
 									}else
 									{
 										sendMess("Sai cú pháp.", connfd, (struct sockaddr*) &cliaddr);
@@ -1038,12 +1076,24 @@ int main(int argc, char* argv[]){
 											strcpy(chuoi1, "Lựa chọn còn lại: ");
 										}else
 										{
-											sendMess("Bạn đã sử dụng hết sự trợ giúp! Suy nghĩ kĩ rồi đưa ra đáp án cuối cùng.", connfd, (struct sockaddr*) &cliaddr);
+											sendMess("Bạn đã sử dụng hết sự trợ giúp! Suy nghĩ kĩ rồi đưa ra đáp án cuối cùng. Nhập 'STOP' để dừng cuộc chơi.", connfd, (struct sockaddr*) &cliaddr);
 										}
 										
 									
 									}else if(strcmp(buff, "A") != 0 && strcmp(buff, "B") != 0  && strcmp(buff, "C") != 0 && strcmp(buff, "D") != 0){
-										sendMess("Nhập sai cú pháp lựa chọn đáp án. Hãy nhập lại!", connfd, (struct sockaddr*) &cliaddr);
+										if(strcmp(buff, "STOP") == 0){
+											insertScore("Khó", acc->username, point);
+											writeFileScore();
+											snprintf(chuoi,sizeof(chuoi), "%d", point);
+											strcat(messagePoint, chuoi);
+											sendMess(messagePoint, connfd, (struct sockaddr*) &cliaddr);
+											strcpy(messagePoint, "Bạn đã thua cuộc. Số điểm bạn có là: ");
+											point = 0;
+											login = 2;
+											aTime = 0;
+										}else{
+											sendMess("Nhập sai cú pháp lựa chọn đáp án. Hoặc nhập \"H\" để nhận được sự trợ giúp 50/50. Nhập 'STOP' để dừng cuộc chơi. Mời nhập lại!", connfd, (struct sockaddr*) &cliaddr);
+										}
 									}
 									else{
 										if(strcmp(buff, questionHard[i].answer) == 0){
@@ -1076,6 +1126,21 @@ int main(int argc, char* argv[]){
 											i = 0;
 											
 										}
+									}
+									
+									break;
+								case 11:
+									if(strcmp(buff, "E") == 0){
+										sendMess("Hãy tạo tài khoản rồi đăng nhập!", connfd, (struct sockaddr*) &cliaddr);
+										
+										tus1 = 0;
+										tus2 = 0;
+										option = 0;
+										regis = 0;
+										login = 0;
+									}else
+									{
+										sendMess("nhập 'E' để thoát", connfd, (struct sockaddr*) &cliaddr);
 									}
 									
 									break;

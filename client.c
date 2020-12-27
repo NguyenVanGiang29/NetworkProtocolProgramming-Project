@@ -101,9 +101,10 @@ int main(int argc, char *argv[]){
             Question();
         }
 
-        if(strcmp(server_response, "Đã đăng xuất.") == 0){
+        if(strcmp(server_response, "Đã đăng xuất.") == 0 || strstr(server_response, "Hãy tạo tài khoản rồi đăng nhập!") != NULL){
             Ailatrieuphu();
         }
+        
 
         if(strcmp(server_response, "--- Đổi mật khẩu ---") == 0){
             printf("%s\n","Mật khẩu mới:");
@@ -128,7 +129,7 @@ int main(int argc, char *argv[]){
             printf("%s\n","Bạn đã sẵn sàng chưa? ( Nhập \"SS\" để bắt đầu hoặc \"OK\" để tiếp tục câu tiếp theo)");
         }
 
-        if(strstr(server_response, "Dễ") != NULL || strstr(server_response, "Khó") != NULL || strstr(server_response, "Trung bình") != NULL  )
+        if(strstr(server_response, "Dễ") != NULL || strstr(server_response, "Khó") != NULL || strstr(server_response, "TB") != NULL  )
         {
             Play();
         }

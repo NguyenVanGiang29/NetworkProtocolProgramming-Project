@@ -47,7 +47,7 @@ typedef struct question
     char answer[5];
 }Question;
 
-Bank setEasy[30];
+Bank setEasy[45];
 Bank setHard[30];
 Bank setMod[30];
 

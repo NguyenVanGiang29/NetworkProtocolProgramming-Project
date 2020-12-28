@@ -695,7 +695,7 @@ int main(int argc, char* argv[]){
     node *acc;
 
 	int option = 0, regis = 0, login = 0, numAns = 0, num = 0;
-
+	int checkBuff = 0, buffLength = 0;
 	char username[20], password[20], chuoi[10] = "abc", chuoi1[100] = "Lựa chọn còn lại: " ;
 	
 
@@ -732,18 +732,37 @@ int main(int argc, char* argv[]){
 								switch (regis)
 								{
 								case 0:
-									acc = find(buff);
-									if(acc == NULL){
-										sendMess("Tạo mật khẩu:", connfd, (struct sockaddr*) &cliaddr);
-										strcpy(username, buff);
-										regis = 1;
-										tus1 = 1;
+									if(strcmp(buff, "\0") != 0){
+										acc = find(buff);
+										buffLength = strlen(buff);
+										for (int i = 0; i < buffLength; i++) {
+											if (buff[i] == ' ') {
+												checkBuff = 1;
+											}
+										}
+										if (checkBuff == 1) {
+											sendMess("Tên tài khoản không thể chứa dấu cách.", connfd, (struct sockaddr*) &cliaddr);
+											checkBuff = 0;
+											tus1 = 0;
+										}
+										else {
+										if(acc == NULL){
+											sendMess("Tạo mật khẩu:", connfd, (struct sockaddr*) &cliaddr);
+											strcpy(username, buff);
+											regis = 1;
+											tus1 = 1;
+										}else
+										{
+											tus1 = 1;
+											tus2 = 1;
+											sendMess("Tên tài khoản đã tồn tại! Hãy thử với tên khác.", connfd, (struct sockaddr*) &cliaddr);
+										}	
+									}
 									}else
 									{
-										tus1 = 1;
-										tus2 = 1;
-										sendMess("Tên tài khoản đã tồn tại! Hãy thử với tên khác.", connfd, (struct sockaddr*) &cliaddr);
-									}								
+										sendMess("Tên tài khoản không thể chứa dấu Enter", connfd, (struct sockaddr*) &cliaddr);
+									}
+													
 									break;
 								case 1:
 									sendMess("Tạo tài khoản thành công.", connfd, (struct sockaddr*) &cliaddr);

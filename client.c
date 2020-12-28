@@ -80,6 +80,9 @@ int main(int argc, char *argv[]){
         server_response[rcvBytes] = '\0';
         printf("%s\n", server_response);
 
+        if(strstr(server_response, "Tên tài khoản không thể ") != NULL){
+            printf("%s\n", "Hãy tạo lại tên tài khoản:");
+        }
 
         if(strcmp(server_response, "--- Đăng kí ---") == 0){
             printf("%s\n", "Tạo tên đăng nhập:");
